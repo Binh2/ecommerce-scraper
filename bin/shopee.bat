@@ -1,2 +1,2 @@
-cd C:\cua-Binh\mon hoc\2022_2023_HK2\EC312.N21_Thiet ke he thong thuong mai dien tu\thuc-hanh\tuan3
+cd C:\bu bu\mon-hoc\Thiet-ke-he-thong-thuong-mai-dien-tu\ecommerce-scraper
 python main.py

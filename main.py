@@ -9,10 +9,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException
 from webdriver_manager.chrome import ChromeDriverManager
 from constants import *
 from selenium.webdriver.chrome.options import Options
 from pprint import pprint
+import re
+import selenium_extended_expected_conditions as EEC
 
 
 try:   
@@ -51,10 +55,16 @@ try:
           continue
 
         elif element_name == "product_image_urls":
-          WebDriverWait(driver, 60).until(EC.presence_of_element_located(get_selector(config["website"], element_name)))
+          # WebDriverWait(driver, 120).until(EC.presence_of_element_located(get_selector(config["website"], element_name)))
+          regex = r'(?:url\(")(.*)(?:"\))'
+          WebDriverWait(driver, 120, ignored_exceptions=(NoSuchElementException,StaleElementReferenceException)).until(
+            EEC.all_elements_have_attribute(get_selector(config["website"], element_name), "style")
+          )
+          driver.implicitly_wait(20)
           elements = driver.find_elements(*get_selector(config["website"], element_name))
-          urls = [ element.get_attribute("style").split("url(")[1].split(")")[0] + ".jpeg" for element in elements ]
-          result[element_name] = str(urls)[1:-1]
+          [ print(element.get_attribute("style")) for element in elements ]
+          urls = [ re.search(regex, element.get_attribute("style")).group(1) for element in elements ]
+          result[element_name] = ",".join(urls)
           
         else:
           WebDriverWait(driver, 60).until(EC.presence_of_element_located(get_selector(config["website"], element_name)))
@@ -80,9 +90,9 @@ try:
         if element_name != "product_rating" and element_name != "product_rating_ammount" 
       }
       pprint(row)
-      print(set(row.keys()))
-      print(set(field_names))
-      print(f'{set(row.keys()) == set(field_names)}')
+      # print(set(row.keys()))
+      # print(set(field_names))
+      # print(f'{set(row.keys()) == set(field_names)}')
       csvWriter.writerow({ 
         element_name_to_field_name[element_name]: result[element_name] 
         for element_name in result 
