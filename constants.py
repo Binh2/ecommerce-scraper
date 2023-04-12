@@ -11,7 +11,7 @@ urls = {
 selectors = {
   "shopee": {
     "product": ".shopee-search-item-result__item a",
-    "product_image_urls": ".A4dsoy.uno8xj",
+    "product_image_urls": ".y4F\+fJ ._7eojrG div",
     "product_title": "._44qnta span",
     "product_regular_price": ".Y3DvsN",
     "product_sale_price": ".pqTWkA",
