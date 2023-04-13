@@ -1,2 +1,4 @@
+@echo off
 cd %~dp0
-python main.py
+cd ../
+python main.py %*
