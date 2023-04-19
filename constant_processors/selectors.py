@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from constants import SELECTORS
 
 
-class SelectorsContant:
+class SelectorsConstant:
   def __init__(self, website: str, additional_info: bool = False):
     self._SELECTORS = SELECTORS
     self._default_values = {

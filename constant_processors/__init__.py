@@ -1,3 +1,3 @@
-from .selectors import SelectorsContant
+from .selectors import SelectorsConstant
 from .regexes import RegexesContant
 from .urls import UrlsContant

@@ -3,6 +3,7 @@ import time
 import constants
 import constant_processors
 import csv
+from currency_converter import CurrencyConvertor
 from handle_exception import handle_exception
 from get_image import get_image
 import argparse
@@ -28,14 +29,17 @@ try:
   argParser.add_argument("-w", "--website", default="amazon", help="Website could be shopee or amazon")
   argParser.add_argument("-k", "--keyword", default="vacuum robot", help="Keyword for the ecommerce search page")
   argParser.add_argument("-n", "--number-of-products", default=150, help="The upperbound for the number of products to get")
-  argParser.add_argument("-d", "--delay", default=60, help="The delay (in second) to wait for each element to load")
-  argParser.add_argument("-a", "--api", "--api-key", default=60, help="The delay (in second) to wait for each element to load")
+  argParser.add_argument("-d", "--delay", default=10, help="The delay (in second) to wait for each element to load")
+  argParser.add_argument("-a", "--api-key", "--api", default=constants.CURRENCY_CONVERTER_API_KEY, help="The delay (in second) to wait for each element to load")
   args = argParser.parse_args()
   config = vars(args)
   delay = int(config["delay"])
 
-  SELECTORS = constant_processors.SelectorsContant(config["website"])
-  EXTENDED_SELECTORS = constant_processors.SelectorsContant(config["website"], additional_info=True)
+  # Currency convertor should be call before SelectorsConstant
+  usd_to_vnd = CurrencyConvertor(config["api_key"])
+
+  SELECTORS = constant_processors.SelectorsConstant(config["website"])
+  EXTENDED_SELECTORS = constant_processors.SelectorsConstant(config["website"], additional_info=True)
   URLS = constant_processors.UrlsContant(config["website"])
   REGEXES = constant_processors.RegexesContant(config["website"])
   EXTENDED_REGEXES = constant_processors.RegexesContant(config["website"], additional_info=True)
