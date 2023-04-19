@@ -27,8 +27,9 @@ try:
   #   help='Show this help message and exit.')
   argParser.add_argument("-w", "--website", default="amazon", help="Website could be shopee or amazon")
   argParser.add_argument("-k", "--keyword", default="vacuum robot", help="Keyword for the ecommerce search page")
-  argParser.add_argument("-n", "--number-of-products", default=1, help="The upperbound for the number of products to get")
+  argParser.add_argument("-n", "--number-of-products", default=150, help="The upperbound for the number of products to get")
   argParser.add_argument("-d", "--delay", default=60, help="The delay (in second) to wait for each element to load")
+  argParser.add_argument("-a", "--api", "--api-key", default=60, help="The delay (in second) to wait for each element to load")
   args = argParser.parse_args()
   config = vars(args)
   delay = int(config["delay"])
@@ -65,8 +66,9 @@ try:
           product_urls.append(product_element.text)  
         else:
           product_urls.append(product_element.get_attribute(selector_info["attribute"]))
-      
-      driver.find_element(*SELECTORS["product_next_page"]).click()
+
+      next_page_button = WebDriverWait(driver, delay).until(EC.presence_of_element_located(SELECTORS["product_next_page"]))      
+      next_page_button.click()
 
   except TimeoutException:
     print("Products page is not opening")
@@ -112,13 +114,22 @@ try:
           regex_info = EXTENDED_REGEXES[element_name][2]
           # if regex_info["regex_type"] == "sub":
           processed_text = re.sub(*REGEXES[element_name], text)
-          result[element_name] = processed_text
+
+          transformed_text = selector_info["transform_function"](processed_text)
+          result[element_name] = transformed_text
 
       except:
         print(element_name)
         handle_exception()
       
     results.append(result)
+
+  print(results)
+
+  # Add brand at the start of description
+  for i in range(len(results)):
+    result = results[i]
+    results[i]["product_description"] = f'<b>Thương hiệu: {result["product_brand"]}</b>' + result["product_description"]
 
   print(results)
 

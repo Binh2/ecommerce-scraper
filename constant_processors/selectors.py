@@ -10,7 +10,8 @@ class SelectorsContant:
       "selector_type": By.CSS_SELECTOR,
       "selector": "",
       "attribute": "",
-      "concatenate_function": lambda x: x
+      "concatenate_function": lambda x: x,
+      "transform_function": lambda x: x,
     }
     self._website = website
     self._additional_info = additional_info

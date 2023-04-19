@@ -1,8 +1,11 @@
+import math
 from selenium.webdriver.common.by import By
 import re
 from validate_url import validate_url
 from encode_url import encode_url
+from currency_converter import CurrencyConvertor
 
+usd_to_vnd = CurrencyConvertor()
 
 SELECTORS = {
   "shopee": {
@@ -47,8 +50,14 @@ SELECTORS = {
       "concatenate_function": lambda texts: ",".join([ encode_url(text) for text in texts if validate_url(text)]),
     },
     "product_title": "h1 #productTitle",
-    "product_regular_price": "#corePriceDisplay_desktop_feature_div .a-price.a-text-price span:not(.a-offscreen)",
-    "product_sale_price": "#corePriceDisplay_desktop_feature_div .priceToPay .a-offscreen",
+    "product_regular_price": {
+      "selector": "#corePriceDisplay_desktop_feature_div .a-price.a-text-price span:not(.a-offscreen)",
+      "transform_function": lambda text: str(math.ceil(usd_to_vnd(float(text))))
+    },
+    "product_sale_price": {
+      "selector": "#corePriceDisplay_desktop_feature_div .a-price .a-price-whole",
+      "transform_function": lambda text: str(math.ceil(usd_to_vnd(float(text)+1)))
+    },
     "product_rating": {
       "selector": "#averageCustomerReviews #acrPopover",
       "attribute": "title",

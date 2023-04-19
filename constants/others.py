@@ -1,3 +1,5 @@
+CURRENCY_CONVERTER_API_KEY = 'fgBmdVrkb6a5cAwZju4kjtQfeK9ftkiC'
+
 element_name_to_field_name = {
   "": "ID",
   "product_type": "Type",
