@@ -6,5 +6,5 @@ URLS = {
   "amazon": {
     "base": "https://www.amazon.com",
     "search": "https://www.amazon.com/s?k="
-  }
+  },
 }

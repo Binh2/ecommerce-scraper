@@ -74,5 +74,5 @@ SELECTORS = {
     # "product_tags": "",
     # "product_categories": "",
     # "product_stock_number": "._6lioXX .flex div:nth-child(2)",
-  }
+  },
 }

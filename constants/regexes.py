@@ -17,11 +17,11 @@ REGEXES = {
   "amazon": {
     "product_regular_price": {
       "regex": "[$,]",
-      "replace": ""
+      "replace": "",
     },
     "product_sale_price": {
       "regex": "[$,]",
-      "replace": ""
+      "replace": "",
     },
     # "product_image_urls": {
     #   "regex_type": "search",

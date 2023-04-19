@@ -30,7 +30,7 @@ try:
   argParser.add_argument("-k", "--keyword", default="vacuum robot", help="Keyword for the ecommerce search page")
   argParser.add_argument("-n", "--number-of-products", default=150, help="The upperbound for the number of products to get")
   argParser.add_argument("-d", "--delay", default=10, help="The delay (in second) to wait for each element to load")
-  argParser.add_argument("-a", "--api-key", "--api", default=constants.CURRENCY_CONVERTER_API_KEY, help="The delay (in second) to wait for each element to load")
+  argParser.add_argument("-a", "--api-key", "--api", default=constants.CURRENCY_CONVERTER_API_KEY, help="API key to use fixer API. Get yours for free from https://api.apilayer.com")
   args = argParser.parse_args()
   config = vars(args)
   delay = int(config["delay"])
@@ -79,6 +79,7 @@ try:
   assert(product_urls != [])
   print(f'{product_urls=}')
 
+  # Get product info
   results = []
   for product_url in product_urls:
     print(product_url)

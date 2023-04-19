@@ -1,10 +1,10 @@
 from selenium.webdriver.common.by import By
-from constants import SELECTORS
+import constants
 
 
 class SelectorsConstant:
   def __init__(self, website: str, additional_info: bool = False):
-    self._SELECTORS = SELECTORS
+    self._SELECTORS = constants.SELECTORS
     self._default_values = {
       "multiple_elements": False,
       "selector_type": By.CSS_SELECTOR,
@@ -31,3 +31,9 @@ class SelectorsConstant:
   
   def __iter__(self):
     return iter({element_name: self[element_name] for element_name in self._SELECTORS[self._website]})
+  
+
+# if __name__ == "__main__":
+# from constant_processors import SelectorsConstant
+# SELECTORS = SelectorsConstant("amazon")
+# print(SELECTORS["product"])
