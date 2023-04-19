@@ -38,4 +38,6 @@ element_name_to_field_name = {
   "": "External URL",
   "": "Button text",
   "": "Position",
+  
+  "product_brand": "",
 }

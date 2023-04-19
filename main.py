@@ -1,3 +1,4 @@
+import sys
 import time
 import constants
 import constant_processors
@@ -22,15 +23,15 @@ import selenium_extended_expected_conditions as EEC
 
 try:   
   argParser = argparse.ArgumentParser(description="Arguments to feed into browser driver")
-  argParser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS, 
-    help='Show this help message and exit.')
-  argParser.add_argument("-w", "--website", default="shopee", help="Website could be shopee")
-  argParser.add_argument("-k", "--keyword", default="tai nghe", help="Keyword for the ecommerce search page")
-  argParser.add_argument("-n", "--number-of-products", default="1", help="The upperbound for the number of products to get")
-  argParser.add_argument("-d", "--delay", default="60", help="The delay (in second) to wait for each element to load")
+  # argParser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS, 
+  #   help='Show this help message and exit.')
+  argParser.add_argument("-w", "--website", default="amazon", help="Website could be shopee or amazon")
+  argParser.add_argument("-k", "--keyword", default="vacuum robot", help="Keyword for the ecommerce search page")
+  argParser.add_argument("-n", "--number-of-products", default=1, help="The upperbound for the number of products to get")
+  argParser.add_argument("-d", "--delay", default=60, help="The delay (in second) to wait for each element to load")
   args = argParser.parse_args()
   config = vars(args)
-  delay = config["delay"]
+  delay = int(config["delay"])
 
   SELECTORS = constant_processors.SelectorsContant(config["website"])
   EXTENDED_SELECTORS = constant_processors.SelectorsContant(config["website"], additional_info=True)
@@ -50,23 +51,27 @@ try:
   # Get all the product urls
   product_urls = []
   try:
-    WebDriverWait(driver, delay).until(EC.presence_of_element_located(SELECTORS["product"]))
-    product_elements = iter(driver.find_elements(*SELECTORS["product"]))
-    selector_info = EXTENDED_SELECTORS["product"][2]
-    while len(product_urls) < config["number_of_products"]:
-      try:
-        product_element = next(product_elements)
-      except StopIteration:
-        break
+    while len(product_urls) < int(config["number_of_products"]):
+      WebDriverWait(driver, delay).until(EC.presence_of_element_located(SELECTORS["product"]))
+      product_elements = iter(driver.find_elements(*SELECTORS["product"]))
+      selector_info = EXTENDED_SELECTORS["product"][2]
+      while len(product_urls) < int(config["number_of_products"]):
+        try:
+          product_element = next(product_elements)
+        except StopIteration:
+          break
+        
+        if selector_info["attribute"] == "":
+          product_urls.append(product_element.text)  
+        else:
+          product_urls.append(product_element.get_attribute(selector_info["attribute"]))
       
-      if selector_info["attribute"] == "":
-        product_urls.append(product_element.text)  
-      else:
-        product_urls.append(product_element.get_attribute(selector_info["attribute"]))
+      driver.find_element(*SELECTORS["product_next_page"]).click()
 
   except TimeoutException:
     print("Products page is not opening")
   assert(product_urls != [])
+  print(f'{product_urls=}')
 
   results = []
   for product_url in product_urls:
@@ -80,7 +85,7 @@ try:
           continue
 
         else:
-          WebDriverWait(driver, 60).until(EC.presence_of_element_located(SELECTORS[element_name]))
+          WebDriverWait(driver, delay).until(EC.presence_of_element_located(SELECTORS[element_name]))
           selector_info = EXTENDED_SELECTORS[element_name][2]
 
           # Get text/attribute string from element(s)
@@ -95,7 +100,7 @@ try:
             text = selector_info["concatenate_function"](texts)
           else:
             element = driver.find_element(*SELECTORS[element_name])
-            print(f'{EXTENDED_SELECTORS[element_name]=}')
+            # print(f'{EXTENDED_SELECTORS[element_name]=}')
             if selector_info["attribute"] == "":
               text = element.text
             else:
@@ -110,6 +115,7 @@ try:
           result[element_name] = processed_text
 
       except:
+        print(element_name)
         handle_exception()
       
     results.append(result)
