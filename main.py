@@ -67,7 +67,7 @@ try:
           break
         
         if selector_info["attribute"] == "":
-          product_urls.append(product_element.text)  
+          product_urls.append(product_element.text)
         else:
           product_urls.append(product_element.get_attribute(selector_info["attribute"]))
 

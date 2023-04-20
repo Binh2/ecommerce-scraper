@@ -12,6 +12,7 @@ class SelectorsConstant:
       "attribute": "",
       "concatenate_function": lambda x: x,
       "transform_function": lambda x: x,
+      "action": "get",
     }
     self._website = website
     self._additional_info = additional_info

@@ -43,11 +43,19 @@ SELECTORS = {
       "attribute": "href",
     },
     "product_next_page": ".s-pagination-next",
+    # "product_image_urls": {
+    #   "multiple_elements": True,
+    #   "selector": ".item .a-button-thumbnail img",
+    #   "attribute": "src",
+    #   "concatenate_function": lambda texts: ",".join([ encode_url(text) for text in texts if validate_url(text)]),
+    # },
     "product_image_urls": {
       "multiple_elements": True,
       "selector": ".item .a-button-thumbnail img",
-      "attribute": "src",
+      "action": "hover",
       "concatenate_function": lambda texts: ",".join([ encode_url(text) for text in texts if validate_url(text)]),
+
+      "product_image_url": "#imgTagWrapperId img",
     },
     "product_title": "h1 #productTitle",
     "product_regular_price": {
@@ -55,8 +63,8 @@ SELECTORS = {
       "transform_function": lambda text: str(math.ceil(usd_to_vnd(float(text))))
     },
     "product_sale_price": {
-      "selector": "#corePriceDisplay_desktop_feature_div .a-price .a-price-whole",
-      "transform_function": lambda text: str(math.ceil(usd_to_vnd(float(text)+1)))
+      "selector": '#corePriceDisplay_desktop_feature_div .a-price span[aria-hidden="true"], #corePrice_feature_div .a-price span[aria-hidden="true"]',
+      "transform_function": lambda text: str(math.ceil(usd_to_vnd(float(text))))
     },
     "product_rating": {
       "selector": "#averageCustomerReviews #acrPopover",
