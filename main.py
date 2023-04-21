@@ -1,5 +1,4 @@
 import sys
-import time
 import constants
 import constant_processors
 import csv
@@ -8,18 +7,15 @@ from handle_exception import handle_exception
 from get_image import get_image
 import argparse
 from selenium import webdriver
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from pprint import pprint
-import re
 import selenium_extended_expected_conditions as EEC
+from process_element_name import process_element_name
 
 
 try:   
@@ -47,11 +43,9 @@ try:
   chrome_options = Options()
   # chrome_options.add_argument('--headless')
   chrome_options.add_argument('--log-level=3')
-  # driver = webdriver.Edge(EdgeChromiumDriverManager().install())
   driver = webdriver.Chrome(ChromeDriverManager().install())
   driver.get(URLS["search"] + config["keyword"])
   driver.maximize_window()
-  # driver.implicitly_wait(5)
 
   # Get all the product urls
   product_urls = []
@@ -88,40 +82,12 @@ try:
     result = {}
     for element_name in SELECTORS:
       try:
-        if element_name == "product" or element_name == "product_next_page":
+        ignored_element_name = ["product", "product_next_page", "product_image_url"]
+        if element_name in ignored_element_name:
           continue
-
-        else:
-          WebDriverWait(driver, delay).until(EC.presence_of_element_located(SELECTORS[element_name]))
-          selector_info = EXTENDED_SELECTORS[element_name][2]
-
-          # Get text/attribute string from element(s)
-          text = None
-          if selector_info["multiple_elements"]:
-            elements = driver.find_elements(*SELECTORS[element_name])
-            texts = None
-            if selector_info["attribute"] == "":
-              texts = [ element.text for element in elements ]
-            else:
-              texts = [ element.get_attribute(selector_info["attribute"]) for element in elements ]
-            text = selector_info["concatenate_function"](texts)
-          else:
-            element = driver.find_element(*SELECTORS[element_name])
-            # print(f'{EXTENDED_SELECTORS[element_name]=}')
-            if selector_info["attribute"] == "":
-              text = element.text
-            else:
-              text = element.get_attribute(selector_info["attribute"])
-          assert(text != None)
-
-          # Do regex (sub (subtitute) or search)
-          processed_text = None
-          regex_info = EXTENDED_REGEXES[element_name][2]
-          # if regex_info["regex_type"] == "sub":
-          processed_text = re.sub(*REGEXES[element_name], text)
-
-          transformed_text = selector_info["transform_function"](processed_text)
-          result[element_name] = transformed_text
+        result[element_name] = process_element_name(driver, element_name, ignored_element_name=ignored_element_name, delay=delay, 
+                                                    SELECTORS=SELECTORS, EXTENDED_SELECTORS=EXTENDED_SELECTORS, 
+                                                    REGEXES=REGEXES, EXTENDED_REGEXES=EXTENDED_REGEXES)
 
       except:
         print(element_name)

@@ -16,6 +16,18 @@ class SelectorsConstant:
     }
     self._website = website
     self._additional_info = additional_info
+    self.setUp(dict(self._SELECTORS[self._website]))
+  
+  def setUp(self, selectors):
+    '''Recursively iterate through selectors to add nested selectors to the self._SELECTORS'''
+    for element_name, selector_info in selectors.items():
+      if element_name.startswith("product"):
+        if type(selector_info) == str:
+          self._SELECTORS[self._website][element_name] = selector_info
+          continue
+        
+        self._SELECTORS[self._website][element_name] = selector_info
+        self.setUp(selector_info)
 
   def __getitem__(self, element_name: str):
     if isinstance(self._SELECTORS[self._website][element_name], str):
