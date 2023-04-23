@@ -36,9 +36,9 @@ try:
 
   SELECTORS = constant_processors.SelectorsConstant(config["website"])
   EXTENDED_SELECTORS = constant_processors.SelectorsConstant(config["website"], additional_info=True)
-  URLS = constant_processors.UrlsContant(config["website"])
-  REGEXES = constant_processors.RegexesContant(config["website"])
-  EXTENDED_REGEXES = constant_processors.RegexesContant(config["website"], additional_info=True)
+  URLS = constant_processors.UrlsConstant(config["website"])
+  REGEXES = constant_processors.RegexesConstant(config["website"])
+  EXTENDED_REGEXES = constant_processors.RegexesConstant(config["website"], additional_info=True)
 
   chrome_options = Options()
   # chrome_options.add_argument('--headless')

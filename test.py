@@ -1,6 +1,7 @@
-class Test():
-  def __getitem__(self, *args):
-    return sum(*args)
+from pprint import pprint
+import constant_processors
 
-test = Test()
-print(test[3,4,5])
+
+website = "amazon"
+SELECTORS = constant_processors.SelectorsConstant(website)
+pprint(SELECTORS["product_image_url"])

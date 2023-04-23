@@ -1,7 +1,7 @@
 from handle_exception import handle_exception
 from constants import REGEXES
 
-class RegexesContant:
+class RegexesConstant:
   def __init__(self, website: str, additional_info: bool = False):
     self._REGEX = REGEXES
     self._website = website

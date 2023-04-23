@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from constants import URLS
 
 
-class UrlsContant:
+class UrlsConstant:
   def __init__(self, website: str):
     self._URLS = URLS
     self._website = website

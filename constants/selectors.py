@@ -55,7 +55,9 @@ SELECTORS = {
       "action": "hover",
       "concatenate_function": lambda texts: ",".join([ encode_url(text) for text in texts if validate_url(text)]),
 
-      "product_image_url": "#imgTagWrapperId img",
+      "children": {
+        "product_image_url": "#imgTagWrapperId img",
+      }
     },
     "product_title": "h1 #productTitle",
     "product_regular_price": {
