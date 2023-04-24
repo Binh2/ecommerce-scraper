@@ -1,6 +1,6 @@
 import sys
 import constants
-import constant_processors
+import constant_interpreters
 import csv
 from currency_converter import CurrencyConvertor
 from handle_exception import handle_exception
@@ -34,11 +34,11 @@ try:
   # Currency convertor should be call before SelectorsConstant
   usd_to_vnd = CurrencyConvertor(config["api_key"])
 
-  SELECTORS = constant_processors.SelectorsConstant(config["website"])
-  EXTENDED_SELECTORS = constant_processors.SelectorsConstant(config["website"], additional_info=True)
-  URLS = constant_processors.UrlsConstant(config["website"])
-  REGEXES = constant_processors.RegexesConstant(config["website"])
-  EXTENDED_REGEXES = constant_processors.RegexesConstant(config["website"], additional_info=True)
+  SELECTORS = constant_interpreters.SelectorsConstant(config["website"])
+  EXTENDED_SELECTORS = constant_interpreters.SelectorsConstant(config["website"], additional_info=True)
+  URLS = constant_interpreters.UrlsConstant(config["website"])
+  REGEXES = constant_interpreters.RegexesConstant(config["website"])
+  EXTENDED_REGEXES = constant_interpreters.RegexesConstant(config["website"], additional_info=True)
 
   chrome_options = Options()
   # chrome_options.add_argument('--headless')

@@ -62,6 +62,6 @@ class SelectorsConstant:
   
 
 # if __name__ == "__main__":
-# from constant_processors import SelectorsConstant
+# from constant_interpreters import SelectorsConstant
 # SELECTORS = SelectorsConstant("amazon")
 # print(SELECTORS["product"])
