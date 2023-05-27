@@ -33,5 +33,15 @@ REGEXES = {
     #   "regex_type": "search",
     #   "regex": r'(?:url\(")(.*)(?:"\))',
     # }
+  },
+  "lazada": {
+    "product_regular_price": {
+      "regex": "[₫ \.]",
+      "replace": "",
+    },
+    "product_sale_price": {
+      "regex": "[₫ \.]",
+      "replace": "",
+    }
   }
 }

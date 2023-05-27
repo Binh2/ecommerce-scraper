@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import math
 from selenium.webdriver.common.by import By
 import re
@@ -37,32 +38,25 @@ SELECTORS = {
     "product_stock_number": "._6lioXX .flex div:nth-child(2)",
   }, 
   
-  "amazon": {
+  "amazon": OrderedDict({
     "product": {
       "selector": ".rush-component h2 a",
       "attribute": "href",
     },
     "product_next_page": ".s-pagination-next",
-    # "product_image_urls": {
-    #   "is_multiple_elements": True,
-    #   "selector": ".item .a-button-thumbnail img",
-    #   "attribute": "src",
-    #   "concatenate_function": lambda texts: ",".join([ functions.encode_url(text) for text in texts if validate_url(text)]),
-    # },
-    "product_image_urls": {
+    "product_thumpnail_image_urls": {
       "is_multiple_elements": True,
       "selector": ".item.imageThumbnail",
-      "action": "hover",
+      "action": "click",
       "concatenate_function": lambda texts: ",".join([ functions.encode_url(text) for text in texts if validate_url(text)]),
-
-      "children": {
-        "product_image_url": {
-          "is_multiple_elements": True,
-          "selector": ".imgTagWrapper img",
-          "attribute": "src",
-          "element_index": -1,
-        },
-      }
+    },
+    
+    # Need to hover over all the thumpnails first because image is lazy loaded
+    "product_image_urls": {
+      "is_multiple_elements": True,
+      "selector": ".imgTagWrapper img",
+      "attribute": "src",
+      "concatenate_function": lambda texts: ",".join([ functions.encode_url(text) for text in texts if validate_url(text)]),
     },
     "product_title": "h1 #productTitle",
     "product_regular_price": {
@@ -91,5 +85,42 @@ SELECTORS = {
     # "product_tags": "",
     # "product_categories": "",
     # "product_stock_number": "._6lioXX .flex div:nth-child(2)",
-  },
+  }),
+  "lazada": OrderedDict({
+    "product": {
+      "selector": ".RfADt a",
+      "attribute": "href",
+    },
+    "product_next_page": ".ant-pagination-next .ant-pagination-item-link",
+
+    # This will be handle by a special function. product_image_urls will use this element's concatenate_function
+    "product_thumpnail_image_urls": {
+      "is_multiple_elements": True,
+      "selector": ".item-gallery__thumbnail-image",
+      "action": "hover",
+      "concatenate_function": lambda texts: ",".join([ functions.encode_url(text) for text in texts if validate_url(text)]),
+    },
+    
+    # Need to hover over all the thumpnails first because image is lazy loaded
+    "product_image_url": {
+      "selector": ".gallery-preview-panel__image",
+      "attribute": "src",
+    },
+    "product_title": ".pdp-mod-product-badge-title",
+    "product_regular_price": ".pdp-price_size_xs",
+    "product_sale_price": ".pdp-price_size_xl",
+    # "product_rating": {
+    #   "selector": "#averageCustomerReviews #acrPopover",
+    #   "attribute": "title",
+    # },
+    "product_rating_amount": {
+      "selector": '.pdp-review-summary__link',
+    },
+    "product_description": {
+      "selector": ".pdp-product-desc",
+      "attribute": "innerHTML",
+      "action": "scroll,get"
+    },
+    "product_brand": ".pdp-product-brand__brand-link"
+  }),
 }
