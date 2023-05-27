@@ -41,5 +41,5 @@ element_name_to_field_name = {
   "": "Button text",
   "": "Position",
   
-  "product_brand": "",
+  "product_brand": "", # Brand
 }

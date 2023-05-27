@@ -1,4 +1,5 @@
-from .element_has_attribute import element_has_attribute
-from .element_has_regex_matched_attribute import element_has_regex_matched_attribute
 from .all_elements_have_attribute import all_elements_have_attribute
 from .all_elements_have_regex_matched_attribute import all_elements_have_regex_matched_attribute
+from .element_attribute_changed import element_attribute_changed
+from .element_has_attribute import element_has_attribute
+from .element_has_regex_matched_attribute import element_has_regex_matched_attribute

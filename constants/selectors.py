@@ -2,11 +2,11 @@ import math
 from selenium.webdriver.common.by import By
 import re
 from validate_url import validate_url
-from encode_url import encode_url
 from currency_converter import CurrencyConvertor
+import functions
+
 
 usd_to_vnd = CurrencyConvertor()
-
 SELECTORS = {
   "shopee": {
     "product": { # special (doesn't process the normal way)
@@ -15,7 +15,7 @@ SELECTORS = {
     },
     "product_next_page": ".shopee-icon-button.shopee-icon-button--right",
     "product_image_urls": {
-      "multiple_elements": True,
+      "is_multiple_elements": True,
       "selector": ".y4F\+fJ ._7eojrG div",
       "attribute": "style",
       "concatenate_function": lambda texts: ",".join([
@@ -26,7 +26,7 @@ SELECTORS = {
     "product_regular_price": ".Y3DvsN",
     "product_sale_price": ".pqTWkA",
     "product_rating": "._1k47d8._046PXf",
-    "product_rating_ammount": "._1k47d8:not(._046PXf)",
+    "product_rating_amount": "._1k47d8:not(._046PXf)",
     "product_description": {
       "selector_type": By.CSS_SELECTOR,
       "selector": ".f7AU53",
@@ -44,19 +44,24 @@ SELECTORS = {
     },
     "product_next_page": ".s-pagination-next",
     # "product_image_urls": {
-    #   "multiple_elements": True,
+    #   "is_multiple_elements": True,
     #   "selector": ".item .a-button-thumbnail img",
     #   "attribute": "src",
-    #   "concatenate_function": lambda texts: ",".join([ encode_url(text) for text in texts if validate_url(text)]),
+    #   "concatenate_function": lambda texts: ",".join([ functions.encode_url(text) for text in texts if validate_url(text)]),
     # },
     "product_image_urls": {
-      "multiple_elements": True,
-      "selector": ".item .a-button-thumbnail img",
+      "is_multiple_elements": True,
+      "selector": ".item.imageThumbnail",
       "action": "hover",
-      "concatenate_function": lambda texts: ",".join([ encode_url(text) for text in texts if validate_url(text)]),
+      "concatenate_function": lambda texts: ",".join([ functions.encode_url(text) for text in texts if validate_url(text)]),
 
       "children": {
-        "product_image_url": "#imgTagWrapperId img",
+        "product_image_url": {
+          "is_multiple_elements": True,
+          "selector": ".imgTagWrapper img",
+          "attribute": "src",
+          "element_index": -1,
+        },
       }
     },
     "product_title": "h1 #productTitle",
@@ -65,14 +70,16 @@ SELECTORS = {
       "transform_function": lambda text: str(math.ceil(usd_to_vnd(float(text))))
     },
     "product_sale_price": {
-      "selector": '#corePriceDisplay_desktop_feature_div .a-price span[aria-hidden="true"], #corePrice_feature_div .a-price span[aria-hidden="true"]',
-      "transform_function": lambda text: str(math.ceil(usd_to_vnd(float(text))))
+      "is_multiple_elements": True,
+      "selector": '#corePrice_feature_div .a-price span[aria-hidden="true"]',
+      "transform_function": lambda text: str(math.ceil(usd_to_vnd(float(text)))),
+      "concatenate_function": lambda texts: next((text for text in texts if text != ""), None),
     },
     "product_rating": {
       "selector": "#averageCustomerReviews #acrPopover",
       "attribute": "title",
     },
-    "product_rating_ammount": '#averageCustomerReviews #acrCustomerReviewText',
+    "product_rating_amount": '#averageCustomerReviews #acrCustomerReviewText',
     "product_description": {
       "selector": "#featurebullets_feature_div ul",
       "attribute": "innerHTML",

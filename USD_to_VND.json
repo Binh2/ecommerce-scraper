@@ -1,1 +1,5 @@
+<<<<<<< Updated upstream
 {"success": true, "timestamp": 1685150403, "base": "USD", "date": "2023-05-27", "rates": {"VND": 23482.5}}
+=======
+{"success": true, "timestamp": 1682296803, "base": "USD", "date": "2023-04-24", "rates": {"VND": 23495}}
+>>>>>>> Stashed changes
