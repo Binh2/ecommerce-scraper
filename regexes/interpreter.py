@@ -1,6 +1,6 @@
 from pprint import pprint
 from typing import Any
-from constants import REGEXES
+from regexes.constants import REGEXES
 import functions
 
 

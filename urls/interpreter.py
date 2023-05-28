@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from constants import URLS
+from urls.constants import URLS
 
 
 class UrlsConstant:

@@ -1,5 +1,5 @@
 @echo off
 pushd %~dp0
 pushd "../"
-python main.py %*
+python run.py %*
 timeout /T 60 > nul

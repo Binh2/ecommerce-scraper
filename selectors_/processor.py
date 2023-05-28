@@ -4,9 +4,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-import constant_interpreters
 import selenium_extended_expected_conditions as EEC
 import functions
+from selectors_.interpreter import SelectorsConstant
+from regexes import RegexesConstant
 
 class SelectorsProcessor:
   def __init__(self, driver: WebDriver, website: str, delay = 60, 
@@ -15,10 +16,10 @@ class SelectorsProcessor:
     self._ignored_element_names = ignored_element_names
     self._website = website
     self._delay = delay
-    self._SELECTORS = constant_interpreters.SelectorsConstant(website)
-    self._EXTENDED_SELECTORS = constant_interpreters.SelectorsConstant(website, additional_info=True)
-    self._REGEXES = constant_interpreters.RegexesConstant(website)
-    self._EXTENDED_REGEXES = constant_interpreters.RegexesConstant(website, additional_info=True)
+    self._SELECTORS = SelectorsConstant(website)
+    self._EXTENDED_SELECTORS = SelectorsConstant(website, additional_info=True)
+    self._REGEXES = RegexesConstant(website)
+    self._EXTENDED_REGEXES = RegexesConstant(website, additional_info=True)
 
   def process_attribute(self, element: WebElement, attribute: str):
     text = None
@@ -68,12 +69,6 @@ class SelectorsProcessor:
     print(element_name)
     if element_name in self._ignored_element_names:
       return None
-
-    if self._website == 'lazada':
-      if element_name == 'product_thumpnail_image_urls':
-        return self.process_lazada_product_thumpnail_image_urls()
-      elif element_name == 'product_image_url': 
-        return None
     
     selector_info = self._EXTENDED_SELECTORS[element_name][2]
     self._selector_info = selector_info
@@ -113,9 +108,19 @@ class SelectorsProcessor:
     return transformed_text
 
   def run(self):
+    if self._website == 'amazon':
+      if self.process_amazon_unavailable(): return None
     result = {}
     for element_name in self._SELECTORS:
       try:
+        if self._website == 'lazada':
+          if element_name == 'product_thumpnail_image_urls':
+            result['product_image_urls'] = self.process_lazada_product_thumpnail_image_urls()
+            continue
+          elif element_name == 'product_image_url': 
+            continue
+
+      
         text = self(element_name)
         if text == None:
           continue
@@ -124,6 +129,18 @@ class SelectorsProcessor:
       except:
         functions.handle_exception()
     return result
+
+  def process_amazon_unavailable(self):
+    try:
+      element = WebDriverWait(self._driver, self._delay).until(EC.presence_of_element_located("#availability .a-color-price"))
+      if element.text == "Currently unavailable.":
+        return True
+    except TimeoutException:
+      pass
+    except:
+      functions.handle_exception()
+    finally:
+      return False
 
   def process_lazada_product_thumpnail_image_urls(self):
     element_name = 'product_thumpnail_image_urls'
@@ -157,7 +174,7 @@ class SelectorsProcessor:
     return transformed_text
       
   def process_lazada_product_image_url(self):
-    element_name = 'product_image_urls'
+    element_name = 'product_image_url'
     WebDriverWait(self._driver, self._delay).until(EC.presence_of_element_located(self._SELECTORS[element_name]))
     selector_info = self._EXTENDED_SELECTORS[element_name][2]
 

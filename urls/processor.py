@@ -3,7 +3,9 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
-import constant_interpreters
+from urls.interpreter import UrlsConstant
+from selectors_.interpreter import SelectorsConstant
+from regexes.interpreter import RegexesConstant
 import functions
 
 
@@ -15,14 +17,17 @@ class UrlsProcessor():
     self._number_of_products = number_of_products
     self._delay = delay * 2
     
-    self._URLS = constant_interpreters.UrlsConstant(website)
-    self._SELECTORS = constant_interpreters.SelectorsConstant(website)
-    self._EXTENDED_SELECTORS = constant_interpreters.SelectorsConstant(website, additional_info=True)
-    self._REGEXES = constant_interpreters.RegexesConstant(website)
-    self._EXTENDED_REGEXES = constant_interpreters.RegexesConstant(website, additional_info=True)
+    self._URLS = UrlsConstant(website)
+    self._SELECTORS = SelectorsConstant(website)
+    self._EXTENDED_SELECTORS = SelectorsConstant(website, additional_info=True)
+    self._REGEXES = RegexesConstant(website)
+    self._EXTENDED_REGEXES = RegexesConstant(website, additional_info=True)
 
   def run(self):
     '''Get all the product urls'''
+    self._driver.get(self._URLS["search"] + self._keyword)
+    self._driver.implicitly_wait(self._delay)
+
     product_urls = []
     try:
       i = self._URLS["page_index"]
@@ -52,7 +57,7 @@ class UrlsProcessor():
 
   def process_next_page(self, page_index: int):
     if self._website == 'lazada':
-      next_page_url = self._URLS["next_page"] % {"keyword": self._keyword, "page_index": str(page_index)}
+      next_page_url = self._URLS["specific_page"] % {"keyword": self._keyword, "page_index": str(page_index)}
       self._driver.get(next_page_url)
       return
     next_page_button = WebDriverWait(self._driver, self._delay).until(EC.presence_of_element_located(self._SELECTORS["product_next_page"]))      

@@ -1,11 +1,12 @@
 from typing import Any
 from selenium.webdriver.common.by import By
 import constants
+from selectors_.constants import SELECTORS
 
 
 class SelectorsConstant:
   def __init__(self, website: str, additional_info: bool = False):
-    self._SELECTORS = dict(constants.SELECTORS)
+    self._SELECTORS = dict(SELECTORS)
     self._default_values = {
       "is_multiple_elements": False,
       "selector_type": By.CSS_SELECTOR,

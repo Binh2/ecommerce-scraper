@@ -1,4 +1,3 @@
+from .element_name_to_api_field_name import element_name_to_api_field_name
+from .element_name_to_csv_field_name import element_name_to_csv_field_name
 from .others import *
-from .regexes import REGEXES
-from .selectors import SELECTORS
-from .urls import URLS
