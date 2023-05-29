@@ -48,6 +48,7 @@ def main(driver: WebDriver, config: dict):
 
   # Init processor before get product info
   selectorsProcessor = SelectorsProcessor(driver, config["website"], delay)
+  write_csv_header()
 
   # Get product info
   results = []
@@ -57,6 +58,7 @@ def main(driver: WebDriver, config: dict):
     driver.get(product_url)  
     driver.implicitly_wait(5)
     result = selectorsProcessor.run()
+    append_to_csv(result)
     if result == None:
       failed_product_url.append(product_url)
       continue
@@ -82,9 +84,9 @@ if __name__ == "__main__":
       results = main(driver, config)
 
       # Add brand at the start of description
-      for i in range(len(results)):
-        result = results[i]
-        results[i]["product_description"] = f'<b>Thương hiệu: {result.get("product_brand", "")}</b>' + result.get("product_description", "")
+      # for i in range(len(results)):
+      #   result = results[i]
+      #   results[i]["product_description"] = f'<b>Thương hiệu: {result.get("product_brand", "")}</b>' + result.get("product_description", "")
       # print(results)
     
   except:
@@ -93,8 +95,8 @@ if __name__ == "__main__":
   finally:
     print(results)
     try:
-      if not config["skip_scraping"]:
-        write_csv(results)
+      # if not config["skip_scraping"]:
+      #   write_csv(results)
       
       if config["post_automatically"]:
         post_to_website(rename_results_key(results))
